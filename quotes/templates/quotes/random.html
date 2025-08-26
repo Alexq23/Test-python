@@ -1,0 +1,57 @@
+{% extends 'quotes/base.html' %}
+
+{% block content %}
+    {% if quote %}
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-body">
+                <blockquote class="blockquote">
+                    <p>{{ quote.text }}</p>
+                    <footer class="blockquote-footer">
+                        {{ quote.source.name }} ({{ quote.source.get_type_display }})
+                    </footer>
+                </blockquote>
+                <p class="text-muted">Просмотров: {{ quote.views }}</p>
+                <div>
+                    <button class="btn btn-success btn-sm" onclick="like({{ quote.id }})">
+                        ❤️ Лайк ({{ quote.likes }})
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="dislike({{ quote.id }})">
+                        ❌ Дизлайк ({{ quote.dislikes }})
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a href="{% url 'add_quote' %}" class="btn btn-primary">Добавить цитату</a>
+            <a href="{% url 'top_quotes' %}" class="btn btn-outline-secondary">Топ-10</a>
+        </div>
+    {% else %}
+        <p class="text-center">Пока нет цитат. <a href="{% url 'add_quote' %}">Добавьте первую!</a></p>
+    {% endif %}
+
+    <script>
+        function like(id) {
+            fetch('/like/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({'id': id})
+            })
+            .then(r => r.json())
+            .then(data => {
+                document.querySelector('.btn-success').innerText = `❤️ Лайк (${data.likes})`;
+            });
+        }
+
+        function dislike(id) {
+            fetch('/dislike/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({'id': id})
+            })
+            .then(r => r.json())
+            .then(data => {
+                document.querySelector('.btn-danger').innerText = `❌ Дизлайк (${data.dislikes})`;
+            });
+        }
+    </script>
+{% endblock %}

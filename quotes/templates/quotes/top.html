@@ -1,0 +1,16 @@
+{% extends 'quotes/base.html' %}
+
+{% block content %}
+    <h2>Топ-10 самых популярных цитат</h2>
+    <ol>
+        {% for quote in quotes %}
+            <li>
+                <strong>"{{ quote.text|truncatechars:100 }}"</strong><br>
+                — {{ quote.source.name }} (лайков: {{ quote.likes }}, просмотров: {{ quote.views }})
+            </li>
+        {% empty %}
+            <li>Пока нет цитат.</li>
+        {% endfor %}
+    </ol>
+    <a href="/" class="btn btn-primary">На главную</a>
+{% endblock %}
